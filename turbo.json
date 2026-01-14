@@ -1,0 +1,42 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "globalDependencies": ["**/.env.*local"],
+  "tasks": {
+    "dev": {
+      "cache": false,
+      "persistent": true,
+      "env": [
+        "PORT",
+        "NODE_ENV",
+        "DATABASE_URL",
+        "CORS_ORIGIN",
+        "API_PREFIX",
+        "SWAGGER_TITLE",
+        "SWAGGER_DESCRIPTION",
+        "SWAGGER_VERSION"
+      ]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "env": ["NODE_ENV", "DATABASE_URL"]
+    },
+    "lint": {
+      "env": [
+        "PORT",
+        "NODE_ENV",
+        "CORS_ORIGIN",
+        "API_PREFIX",
+        "SWAGGER_TITLE",
+        "SWAGGER_DESCRIPTION",
+        "SWAGGER_VERSION"
+      ]
+    },
+    "test": {
+      "env": ["NODE_ENV", "DATABASE_URL"]
+    },
+    "test:e2e": {
+      "env": ["NODE_ENV", "DATABASE_URL", "PORT"]
+    }
+  }
+}

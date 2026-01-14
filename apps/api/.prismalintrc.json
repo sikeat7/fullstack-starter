@@ -1,0 +1,5 @@
+{
+  "rules": {
+    "prisma-schema-style/datasource-url": "off"
+  }
+}

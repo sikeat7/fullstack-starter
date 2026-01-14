@@ -1,0 +1,41 @@
+{
+  "name": "fullstack-starter",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A fullstack TypeScript monorepo starter with Next.js, NestJS, Prisma, and Turborepo",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "dev": "turbo run dev --parallel",
+    "dev:api": "turbo run dev --filter=api",
+    "dev:client": "turbo run dev --filter=client",
+    "build": "turbo run build",
+    "build:api": "turbo run build --filter=api",
+    "build:client": "turbo run build --filter=client",
+    "test": "turbo run test",
+    "test:e2e": "turbo run test:e2e",
+    "prepare": "husky",
+    "lint": "turbo run lint",
+    "lint:fix": "turbo run lint -- --fix",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "db:up": "cd apps/api && npm run db:up",
+    "db:down": "cd apps/api && npm run db:down",
+    "db:studio": "prisma studio --schema ./apps/api/prisma/schema.prisma --hostname 127.0.0.1 --port 5556",
+    "start": "turbo run start --parallel"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@repo/eslint": "workspace:*",
+    "@repo/typescript": "workspace:*",
+    "@repo/prettier": "workspace:*",
+    "husky": "^9.1.7",
+    "prettier": "^3.4.2",
+    "turbo": "^2.5.6"
+  },
+  "packageManager": "pnpm@9.15.4",
+  "engines": {
+    "node": ">=18"
+  }
+}

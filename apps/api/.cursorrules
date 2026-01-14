@@ -1,0 +1,256 @@
+# Reglas Ultra Específicas para B2B Project API - NestJS + Prisma
+
+## 📚 CONTEXTO FUNDAMENTAL DEL PROYECTO
+
+**IMPORTANTE:** Antes de cualquier implementación o decisión técnica, SIEMPRE consulta y basa tu trabajo en el archivo `docs/fundational.md`. Este documento contiene:
+
+- **Visión y Misión** del proyecto B2B
+- **Estrategia por fases** (MVP → Proveedores → Marketplace)
+- **Funcionalidades específicas** de cada módulo
+- **Problemas del dominio** que estamos resolviendo
+- **Modelo de negocio** y evolución del producto
+- **Principios de diseño** y tecnologías propuestas
+
+El `fundational.md` es tu guía principal para entender el contexto completo del proyecto. Úsalo para:
+
+- Validar que las funcionalidades implementadas alineen con la estrategia
+- Entender el dominio del negocio antes de escribir código
+- Tomar decisiones técnicas que soporten la evolución del producto
+- Mantener consistencia con la visión del equipo fundador
+
+## 🎯 CONTEXTO DEL PROYECTO
+
+Este es un **Sistema SaaS B2B** para comerciantes (bares, restaurantes, almacenes) y proveedores (distribuidores de bebidas, alimentos, limpieza, etc.). El MVP funciona como un **ERP liviano** con el objetivo de digitalizar operaciones manuales como pedidos, pagos, remitos y facturación. Posteriormente, se activará un **marketplace inteligente** con comparador de precios y órdenes de compra automáticas.
+
+**Stack Tecnológico:** NestJS, TypeScript, Prisma ORM, PostgreSQL, pnpm, zod, betterAuth
+**Usuarios Objetivo:** Dueños de comercios, Proveedores mayoristas, Administradores de compras y finanzas
+**Meta:** Ordenar operaciones internas, facilitar la gestión de pedidos, pagos y proveedores, y sentar bases para un marketplace B2B escalable e inteligente.
+
+## 🏗️ ARQUITECTURA Y PATRONES
+
+### Estructura de Módulos
+
+- **Siempre** sigue la estructura modular de NestJS: `controller.ts`, `service.ts`, `module.ts`, `dto/`, `entities/`
+- **Nunca** mezcles lógica de negocio en controllers - solo en services
+- **Siempre** usa inyección de dependencias con `@Injectable()`
+- **Siempre** implementa interfaces para servicios complejos o extensibles
+- **Siempre** inyecta PrismaService mediante constructor (no uso global)
+- **Siempre** mantén controllers finos: validan entrada y delegan a services
+
+### Base de Datos y Prisma
+
+- **Siempre** usa snake_case para nombres de columnas en Prisma schema
+- **Siempre** incluye timestamps: `createdAt`, `updatedAt`, `deletedAt` (soft delete)
+- **Siempre** usa `@map()` para mapear camelCase a snake_case
+- **Siempre** valida existencia de entidades antes de crear relaciones
+- **Nunca** uses `any` type - usa tipos específicos de Prisma
+- **Siempre** implementa soft delete con `deletedAt` nullable
+- **Siempre** evita queries con `select *`, usa `select/include` específicos
+- **Siempre** usa transacciones Prisma para operaciones múltiples relacionadas
+
+### Validación y DTOs
+
+- **Siempre** usa `class-validator` decorators en DTOs
+- **Siempre** incluye `@ApiProperty()` para Swagger documentation
+- **Siempre** valida longitud mínima y máxima en strings
+- **Siempre** usa regex patterns para validaciones complejas (ej: passwords, CUIT)
+- **Siempre** incluye ejemplos realistas en `@ApiProperty()`
+- **Siempre** valida CUIT, emails, montos positivos, fechas coherentes
+- **Siempre** valida campos sensibles con regex específicos
+
+### Manejo de Errores
+
+- **Siempre** usa excepciones específicas de NestJS: `NotFoundException`, `ConflictException`, `BadRequestException`
+- **Siempre** implementa `PrismaExceptionFilter` para errores de base de datos
+- **Siempre** valida datos antes de operaciones de base de datos
+- **Siempre** maneja casos edge (ej: email duplicado, CUIT duplicado)
+- **Nunca** expongas información sensible en errores
+- **Siempre** valida entrada antes de tocar DB
+
+## 🔐 SEGURIDAD Y AUTENTICACIÓN
+
+### Passwords y Hashing
+
+- **Siempre** usa bcryptjs para hashing de passwords
+- **Siempre** configura rounds de hashing desde environment variables
+- **Siempre** valida fortaleza de password con regex
+- **Nunca** almacenes passwords en texto plano
+- **Siempre** valida campos sensibles (email, password, CUIT) con regex
+- **Nunca** loguees información confidencial
+
+### Validaciones de Entrada
+
+- **Siempre** valida emails con `@IsEmail()`
+- **Siempre** valida CUIT con formato específico
+- **Siempre** valida montos positivos en transacciones
+- **Siempre** valida fechas lógicas (ej: dueDate > date)
+
+## 📊 LÓGICA DE NEGOCIO
+
+### Transacciones Financieras
+
+- **Siempre** valida que `paidAmount <= totalAmount`
+- **Siempre** actualiza estado de pagos y pedidos automáticamente según datos
+- **Siempre** valida existencia de proveedor y usuario
+- **Siempre** valida método de pago antes de crear transacción
+- **Siempre** usa transacciones Prisma para operaciones múltiples relacionadas
+
+### Proveedores
+
+- **Siempre** valida CUIT único antes de crear
+- **Siempre** valida existencia de categoría obligatoria
+- **Siempre** valida existencia de dirección si se proporciona
+- **Siempre** valida métodos de pago asociados
+
+### Paginación y Búsqueda
+
+- **Siempre** implementa paginación con `page` y `limit`
+- **Siempre** incluye metadata: `total`, `totalPages`, `page`, `limit`
+- **Siempre** implementa búsqueda case-insensitive
+- **Siempre** usa `Promise.all()` para queries paralelas
+- **Siempre** usa estructura de respuesta: `{ data: [], meta: { total, page, limit, totalPages } }`
+- **Siempre** todos los endpoints de lista deben implementar paginación
+
+## 🧪 TESTING Y CALIDAD
+
+### Estructura de Tests
+
+- **Siempre** crea tests unitarios para services
+- **Siempre** crea tests e2e para endpoints
+- **Siempre** mockea PrismaService en tests
+- **Siempre** testea casos edge y errores
+- **Siempre** cada service debe tener tests unitarios con Jest
+- **Siempre** endpoints principales deben tener tests E2E
+- **Siempre** testea edge cases, validaciones y errores comunes
+
+### Cobertura de Código
+
+- **Siempre** mantén cobertura > 80%
+- **Siempre** testea validaciones de entrada
+- **Siempre** testea manejo de errores
+- **Siempre** testea lógica de negocio compleja
+
+## 📝 DOCUMENTACIÓN Y CÓDIGO
+
+### Swagger/OpenAPI
+
+- **Siempre** documenta todos los endpoints con `@ApiTags()`
+- **Siempre** documenta DTOs con `@ApiProperty()`
+- **Siempre** incluye ejemplos realistas
+- **Siempre** documenta códigos de respuesta
+
+### Comentarios y Código
+
+- **Siempre** comenta lógica de negocio compleja
+- **Siempre** usa nombres descriptivos para variables
+- **Siempre** agrupa imports: externos, internos, relativos
+- **Siempre** usa TypeScript strict mode
+- **Siempre** documenta funciones públicas con JSDoc
+- **Siempre** no dejes código comentado innecesario
+
+## 🚀 DEPLOYMENT Y CONFIGURACIÓN
+
+### Environment Variables
+
+- **Siempre** usa `ConfigService` para configuración
+- **Siempre** valida variables de entorno requeridas
+- **Siempre** usa valores por defecto seguros
+- **Nunca** hardcodees valores sensibles
+- **Siempre** valida todas las variables de entorno con schemas
+- **Siempre** nunca hardcodear valores sensibles
+
+### Docker y CI/CD
+
+- **Siempre** usa multi-stage builds en Dockerfile
+- **Siempre** optimiza tamaño de imagen
+- **Siempre** usa usuario no-root en contenedores
+- **Siempre** incluye health checks
+- **Siempre** incluye healthchecks en producción
+
+## 🔄 CONVENCIONES ESPECÍFICAS
+
+### Nomenclatura
+
+- **Controllers**: `ProductController`, `SupplierController`
+- **Services**: `ProductService`, `SupplierService`
+- **DTOs**: `CreateProductDto`, `UpdateProductDto`
+- **Módulos**: `ProductModule`, `SupplierModule`
+- **Tests**: `product.service.spec.ts`, `product.controller.e2e-spec.ts`
+
+### Estructura de Respuestas
+
+```typescript
+// Para listas con paginación
+{
+  data: Entity[],
+  meta: {
+    total: number,
+    page: number,
+    limit: number,
+    totalPages: number
+  }
+}
+
+// Para errores
+{
+  statusCode: number,
+  message: string
+}
+```
+
+### Patrones de Validación
+
+```typescript
+// Validación de existencia
+const entity = await this.prisma.entity.findUnique({
+  where: { id: entityId },
+});
+if (!entity) {
+  throw new NotFoundException(`Entity with ID ${entityId} not found`);
+}
+
+// Validación de unicidad
+const existing = await this.prisma.entity.findUnique({
+  where: { uniqueField: value },
+});
+if (existing) {
+  throw new ConflictException('Entity already exists');
+}
+```
+
+## ⚠️ REGLAS CRÍTICAS
+
+1. **NUNCA** uses `any` type - siempre define tipos específicos
+2. **NUNCA** mezcles lógica de negocio en controllers
+3. **NUNCA** olvides validar entrada de usuario
+4. **NUNCA** expongas información sensible en logs
+5. **SIEMPRE** maneja errores de base de datos apropiadamente
+6. **SIEMPRE** valida relaciones antes de crear entidades
+7. **SIEMPRE** implementa soft delete para entidades principales
+8. **SIEMPRE** usa transacciones para operaciones complejas
+
+## 🎨 ESTILO DE CÓDIGO
+
+- **Siempre** usa camelCase para variables, funciones y atributos
+- **Siempre** usa PascalCase para clases, interfaces y DTOs
+- **Siempre** usa UPPER_SNAKE_CASE para constantes
+- **Siempre** mantén líneas < 100 caracteres
+- **Siempre** usa 2 espacios por indentación
+- **Siempre** termina archivos con newline
+- **Siempre** agrupa imports: externos, internos, relativos
+
+## 🔍 REVISIÓN DE CÓDIGO
+
+Antes de commitear, verifica:
+
+- [ ] Todos los tests pasan
+- [ ] Lint sin errores
+- [ ] Swagger documentado
+- [ ] DTOs con validaciones
+- [ ] Errores bien manejados
+- [ ] Tipos correctos (no hay any)
+- [ ] Nombres descriptivos
+- [ ] Controllers limpios
+- [ ] Lógica de negocio en services
+
+Esta configuración asegura un código profesional, mantenible y escalable para el **Sistema SaaS B2B ERP** con visión de marketplace inteligente.

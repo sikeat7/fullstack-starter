@@ -1,0 +1,26 @@
+{
+  "name": "@repo/data",
+  "version": "0.0.1",
+  "description": "Data schemas and models",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@repo/core": "workspace:*",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@repo/typescript": "workspace:*"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
+  }
+}

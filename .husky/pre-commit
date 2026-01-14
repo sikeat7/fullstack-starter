@@ -1,0 +1,2 @@
+# Ejecutar linting en todo el monorepo
+pnpm lint

@@ -1,0 +1,17 @@
+{
+  "extends": "@repo/typescript/nestjs",
+  "compilerOptions": {
+    "baseUrl": "./",
+    "composite": true,
+    "declaration": true,
+    "declarationMap": true,
+    "outDir": "./dist",
+    "paths": {
+      "@repo/data": ["../../packages/data/dist"],
+      "@repo/core": ["../../packages/core/dist"]
+    }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"],
+  "references": [{ "path": "../../packages/data" }, { "path": "../../packages/core" }]
+}

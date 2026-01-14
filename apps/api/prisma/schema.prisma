@@ -1,0 +1,54 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Note: `url` in datasource is valid for Prisma 6.x
+// The warning about Prisma 7 can be ignored until we upgrade
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ===========================================
+// BASE MODELS
+// ===========================================
+
+/// User model with authentication and soft delete support
+/// This is a starter model - extend it based on your application needs
+model User {
+  // Identification fields
+  id             String  @id @default(cuid())
+  email          String  @unique
+  password       String
+  firstName      String  @map("first_name")
+  lastName       String  @map("last_name")
+  profilePicture String? @default("no-profile-picture.png") @map("profile_picture")
+
+  // Role field
+  role UserRole @default(USER)
+
+  // Validation fields
+  emailVerifiedAt DateTime? @map("email_verified_at")
+  isActive        Boolean   @default(false) @map("is_active")
+
+  // Audit fields (timestamps + soft delete)
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("users")
+}
+
+// ===========================================
+// ENUMS
+// ===========================================
+
+/// User roles enum
+/// Extend this based on your application's authorization needs
+enum UserRole {
+  ADMIN
+  USER
+}
