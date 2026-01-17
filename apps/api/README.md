@@ -1,150 +1,150 @@
-# 🚀 B2B API - Sistema SaaS B2B
+# 🚀 B2B API - B2B SaaS System
 
-Sistema SaaS B2B para comerciantes (bares, restaurantes, almacenes) y proveedores (distribuidores de bebidas, alimentos, limpieza, etc.). El MVP funciona como un **ERP liviano** con el objetivo de digitalizar operaciones manuales como pedidos, pagos, remitos y facturación.
+B2B SaaS system for merchants (bars, restaurants, warehouses) and suppliers (beverage distributors, food, cleaning, etc.). The MVP works as a **lightweight ERP** with the goal of digitizing manual operations such as orders, payments, delivery notes and invoicing.
 
-## 🎯 Características
+## 🎯 Features
 
-- **ERP Liviano**: Gestión de pedidos, pagos, remitos y facturación
-- **Marketplace Inteligente**: Comparador de precios y órdenes de compra automáticas (futuro)
-- **Arquitectura Modular**: NestJS con estructura modular escalable
-- **Base de Datos Robusta**: PostgreSQL con Prisma ORM
-- **Seguridad Avanzada**: JWT, bcrypt, validaciones robustas
-- **Docker Optimizado**: Multi-stage builds y configuración de producción
+- **Lightweight ERP**: Order management, payments, delivery notes and invoicing
+- **Smart Marketplace**: Price comparison and automatic purchase orders (future)
+- **Modular Architecture**: NestJS with scalable modular structure
+- **Robust Database**: PostgreSQL with Prisma ORM
+- **Advanced Security**: JWT, bcrypt, robust validations
+- **Optimized Docker**: Multi-stage builds and production configuration
 
-## 🏗️ Stack Tecnológico
+## 🏗️ Technology Stack
 
 - **Backend**: NestJS, TypeScript, Prisma ORM
-- **Base de Datos**: PostgreSQL 15
+- **Database**: PostgreSQL 15
 - **Cache**: Redis 7
-- **Autenticación**: JWT, bcryptjs
-- **Validación**: class-validator, zod
-- **Documentación**: Swagger/OpenAPI
-- **Containerización**: Docker, Docker Compose
-- **Gestor de Paquetes**: pnpm
+- **Authentication**: JWT, bcryptjs
+- **Validation**: class-validator, zod
+- **Documentation**: Swagger/OpenAPI
+- **Containerization**: Docker, Docker Compose
+- **Package Manager**: pnpm
 
-## 🚀 Inicio Rápido
+## 🚀 Quick Start
 
-### Prerrequisitos
+### Prerequisites
 
 - Docker Desktop
 - Node.js 20+
 - pnpm
 
-### Configuración Inicial
+### Initial Configuration
 
-1. **Clonar el repositorio**
+1. **Clone the repository**
 
 ```bash
 git clone <repository-url>
 cd b2b-api
 ```
 
-2. **Configurar variables de entorno**
+2. **Configure environment variables**
 
 ```bash
 cp env.example .env
-# Editar .env con tus configuraciones
+# Edit .env with your configurations
 ```
 
-3. **Iniciar servicios de desarrollo**
+3. **Start development services**
 
 ```bash
 ./scripts/docker-dev.sh start
 ```
 
-4. **Verificar que todo funcione**
+4. **Verify everything works**
 
 ```bash
 ./scripts/docker-dev.sh health
 ```
 
-### Endpoints Disponibles
+### Available Endpoints
 
 - **Health Check**: `GET /health`
 - **API Base**: `GET /`
-- **Swagger Docs**: `GET /api` (cuando esté configurado)
+- **Swagger Docs**: `GET /api` (when configured)
 
-## 🛠️ Desarrollo
+## 🛠️ Development
 
-### Scripts de Utilidad
+### Utility Scripts
 
 ```bash
-# Iniciar servicios
+# Start services
 ./scripts/docker-dev.sh start
 
-# Ver logs
+# View logs
 ./scripts/docker-dev.sh logs
 
-# Abrir shell en contenedor
+# Open shell in container
 ./scripts/docker-dev.sh shell
 
-# Ejecutar tests
+# Run tests
 ./scripts/docker-dev.sh test
 
-# Verificar health checks
+# Verify health checks
 ./scripts/docker-dev.sh health
 
-# Detener servicios
+# Stop services
 ./scripts/docker-dev.sh stop
 
-# Limpiar todo
+# Clean everything
 ./scripts/docker-dev.sh clean
 ```
 
-### Comandos Docker Directos
+### Direct Docker Commands
 
 ```bash
-# Desarrollo
+# Development
 docker-compose up app-dev
 
-# Producción
+# Production
 docker-compose -f docker-compose.prod.yml up -d
 
 # Rebuild
 docker-compose build
 
-# Logs específicos
+# Specific logs
 docker-compose logs -f app-dev
 docker-compose logs -f db
 docker-compose logs -f redis
 ```
 
-### Estructura del Proyecto
+### Project Structure
 
 ```
 b2b-api/
 ├── src/
-│   ├── app.controller.ts      # Controlador principal
-│   ├── app.service.ts         # Servicio principal
-│   ├── app.module.ts          # Módulo principal
-│   └── main.ts               # Punto de entrada
+│   ├── app.controller.ts      # Main controller
+│   ├── app.service.ts         # Main service
+│   ├── app.module.ts          # Main module
+│   └── main.ts               # Entry point
 ├── test/                     # Tests
-├── scripts/                  # Scripts de utilidad
-├── Dockerfile               # Docker para producción
-├── Dockerfile.dev           # Docker para desarrollo
-├── docker-compose.yml       # Configuración desarrollo
-├── docker-compose.prod.yml  # Configuración producción
-├── env.example              # Variables de entorno ejemplo
-└── README.md               # Documentación
+├── scripts/                  # Utility scripts
+├── Dockerfile               # Docker for production
+├── Dockerfile.dev           # Docker for development
+├── docker-compose.yml       # Development configuration
+├── docker-compose.prod.yml  # Production configuration
+├── env.example              # Environment variables example
+└── README.md               # Documentation
 ```
 
-## 🔧 Configuración
+## 🔧 Configuration
 
-### Variables de Entorno
+### Environment Variables
 
-Copia `env.example` a `.env` y configura:
+Copy `env.example` to `.env` and configure:
 
 ```bash
-# Base de Datos
+# Database
 POSTGRES_USER=admin
 POSTGRES_PASSWORD=admin123
 POSTGRES_DB=b2b_db
 
-# Aplicación
+# Application
 NODE_ENV=development
 PORT=3000
 
-# Seguridad
+# Security
 JWT_SECRET=your-super-secret-jwt-key
 BCRYPT_ROUNDS=12
 
@@ -152,31 +152,31 @@ BCRYPT_ROUNDS=12
 REDIS_PASSWORD=redis123
 ```
 
-### Servicios Docker
+### Docker Services
 
-- **app-dev**: Aplicación NestJS en modo desarrollo
-- **app-prod**: Aplicación NestJS en modo producción
+- **app-dev**: NestJS application in development mode
+- **app-prod**: NestJS application in production mode
 - **db**: PostgreSQL 15
-- **redis**: Redis 7 para cache
+- **redis**: Redis 7 for cache
 
 ## 🧪 Testing
 
 ```bash
-# Tests unitarios
+# Unit tests
 ./scripts/docker-dev.sh test
 
-# Tests E2E
+# E2E tests
 docker-compose exec app-dev pnpm run test:e2e
 
-# Cobertura
+# Coverage
 docker-compose exec app-dev pnpm run test:cov
 ```
 
-## 📊 Monitoreo
+## 📊 Monitoring
 
 ### Health Checks
 
-Todos los servicios incluyen health checks:
+All services include health checks:
 
 - **API**: `GET /health`
 - **PostgreSQL**: `pg_isready`
@@ -185,19 +185,19 @@ Todos los servicios incluyen health checks:
 ### Logs
 
 ```bash
-# Logs de aplicación
+# Application logs
 ./scripts/docker-dev.sh logs
 
-# Logs específicos
+# Specific logs
 ./scripts/docker-dev.sh logs-db
 ./scripts/docker-dev.sh logs-redis
 ```
 
-## 🚀 Producción
+## 🚀 Production
 
-### Configuración de Producción
+### Production Configuration
 
-1. **Configurar variables de producción**
+1. **Configure production variables**
 
 ```bash
 export POSTGRES_USER=prod_user
@@ -206,70 +206,70 @@ export POSTGRES_DB=b2b_prod
 export JWT_SECRET=production-secret-key
 ```
 
-2. **Ejecutar en producción**
+2. **Run in production**
 
 ```bash
 docker-compose -f docker-compose.prod.yml up -d
 ```
 
-### Optimizaciones de Producción
+### Production Optimizations
 
-- **Multi-stage builds**: Imágenes optimizadas
-- **Usuario no-root**: Seguridad mejorada
-- **Health checks**: Monitoreo automático
-- **Volúmenes persistentes**: Datos persistentes
-- **Networks aisladas**: Seguridad de red
+- **Multi-stage builds**: Optimized images
+- **Non-root user**: Enhanced security
+- **Health checks**: Automatic monitoring
+- **Persistent volumes**: Persistent data
+- **Isolated networks**: Network security
 
-## 🔐 Seguridad
+## 🔐 Security
 
-### Mejores Prácticas Implementadas
+### Implemented Best Practices
 
-- ✅ Usuario no-root en contenedores
-- ✅ Variables de entorno para credenciales
-- ✅ Health checks para todos los servicios
-- ✅ Validación de entrada con class-validator
-- ✅ Hashing de passwords con bcrypt
-- ✅ JWT para autenticación
-- ✅ CORS configurado
-- ✅ Rate limiting preparado
+- ✅ Non-root user in containers
+- ✅ Environment variables for credentials
+- ✅ Health checks for all services
+- ✅ Input validation with class-validator
+- ✅ Password hashing with bcrypt
+- ✅ JWT for authentication
+- ✅ CORS configured
+- ✅ Rate limiting prepared
 
-## 📈 Arquitectura
+## 📈 Architecture
 
-### Patrones de Diseño
+### Design Patterns
 
-- **Modular**: Estructura de módulos NestJS
-- **Inyección de Dependencias**: Services inyectados
-- **Repository Pattern**: Prisma como ORM
-- **DTO Pattern**: Validación de entrada
-- **Exception Filter**: Manejo centralizado de errores
+- **Modular**: NestJS module structure
+- **Dependency Injection**: Injected services
+- **Repository Pattern**: Prisma as ORM
+- **DTO Pattern**: Input validation
+- **Exception Filter**: Centralized error handling
 
-### Base de Datos
+### Database
 
-- **PostgreSQL**: Base de datos principal
+- **PostgreSQL**: Main database
 - **Prisma ORM**: Type-safe database access
-- **Migrations**: Control de versiones de schema
-- **Soft Delete**: Eliminación lógica
-- **Indexes**: Optimización de queries
+- **Migrations**: Schema version control
+- **Soft Delete**: Logical deletion
+- **Indexes**: Query optimization
 
-## 🤝 Contribución
+## 🤝 Contributing
 
-1. Fork el proyecto
-2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
-3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
-4. Push a la rama (`git push origin feature/AmazingFeature`)
-5. Abre un Pull Request
+1. Fork the project
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-## 📝 Licencia
+## 📝 License
 
-Este proyecto está bajo la Licencia MIT. Ver el archivo `LICENSE` para más detalles.
+This project is under the MIT License. See the `LICENSE` file for more details.
 
-## 🆘 Soporte
+## 🆘 Support
 
-- **Issues**: Reporta bugs en GitHub Issues
-- **Documentación**: Swagger docs en `/api`
-- **Logs**: Usa `./scripts/docker-dev.sh logs`
-- **Health**: Verifica con `./scripts/docker-dev.sh health`
+- **Issues**: Report bugs in GitHub Issues
+- **Documentation**: Swagger docs at `/api`
+- **Logs**: Use `./scripts/docker-dev.sh logs`
+- **Health**: Check with `./scripts/docker-dev.sh health`
 
 ---
 
-**Desarrollado con ❤️ para el ecosistema B2B**
+**Developed with ❤️ for the B2B ecosystem**

@@ -7,12 +7,12 @@
 import { z } from 'zod';
 
 /**
- * Schema de validación para variables de entorno
- * Este schema asegura que todas las variables requeridas existan y tengan el formato correcto
+ * Validation schema for environment variables
+ * This schema ensures all required variables exist and have the correct format
  */
 const envSchema = z.object({
   // ===========================================
-  // Entorno
+  // Environment
   // ===========================================
   NODE_ENV: z
     .enum(['development', 'staging', 'production', 'test'])
@@ -44,7 +44,7 @@ const envSchema = z.object({
   REDIS_PASSWORD: z.string().optional(),
 
   // ===========================================
-  // JWT & Seguridad
+  // JWT & Security
   // ===========================================
   JWT_SECRET: z
     .string()
@@ -124,6 +124,6 @@ export const validateEnv = (): EnvConfig => {
 };
 
 /**
- * Configuración validada lista para usar
+ * Validated configuration ready to use
  */
 export const config = validateEnv();
