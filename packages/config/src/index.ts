@@ -1,4 +1,4 @@
-// Exportar validación de variables de entorno
+// Export environment variables validation
 /**
  * @fileoverview @repo/config entry point
  * @purpose Exports validated environment configuration

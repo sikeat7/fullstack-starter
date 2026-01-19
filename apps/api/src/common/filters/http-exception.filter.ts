@@ -14,10 +14,10 @@ type ZodError = z.ZodError
 type ZodIssue = z.ZodIssue
 
 /**
- * Filtro global de excepciones
+ * Global exception filter
  *
- * Captura y formatea todos los errores de la aplicación de forma consistente
- * Maneja casos especiales como errores de Prisma y validación Zod
+ * Captures and formats all application errors consistently
+ * Handles special cases like Prisma errors and Zod validation
  */
 @Catch()
 export class GlobalExceptionFilter implements ExceptionFilter {
@@ -29,11 +29,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>()
 
     let status = HttpStatus.INTERNAL_SERVER_ERROR
-    let message: string | string[] = 'Error interno del servidor'
+    let message: string | string[] = 'Internal server error'
     let errorCode: string | undefined
     let errors: any
 
-    // 1. Errores HTTP de NestJS
+    // 1. NestJS HTTP errors
     if (exception instanceof HttpException) {
       status = exception.getStatus()
       const exceptionResponse = exception.getResponse()
@@ -46,10 +46,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         errors = responseObj.errors
       }
     }
-    // 2. Errores de validación Zod
+    // 2. Zod validation errors
     else if (this.isZodError(exception)) {
       status = HttpStatus.BAD_REQUEST
-      message = 'Error de validación'
+      message = 'Validation error'
       errorCode = 'VALIDATION_ERROR'
       errors = exception.issues.map(err => ({
         field: err.path.join('.'),
@@ -57,7 +57,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         code: err.code,
       }))
     }
-    // 3. Errores de Prisma (base de datos)
+    // 3. Prisma errors (database)
     else if (
       typeof exception === 'object' &&
       exception !== null &&
@@ -69,18 +69,18 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message = prismaError.message
       errorCode = prismaError.code
     }
-    // 4. Errores de validación de Prisma
+    // 4. Prisma validation errors
     else if (exception instanceof Prisma.PrismaClientValidationError) {
       status = HttpStatus.BAD_REQUEST
-      message = 'Error de validación en la base de datos'
+      message = 'Database validation error'
       errorCode = 'DATABASE_VALIDATION_ERROR'
     }
-    // 5. Errores genéricos
+    // 5. Generic errors
     else if (exception instanceof Error) {
       message = exception.message
     }
 
-    // Crear respuesta de error estandarizada
+    // Create standardized error response
     const errorResponse: any = {
       statusCode: status,
       message,
@@ -89,17 +89,17 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       method: request.method,
     }
 
-    // Agregar código de error si existe
+    // Add error code if exists
     if (errorCode) {
       errorResponse.errorCode = errorCode
     }
 
-    // Agregar errores detallados si existen
+    // Add detailed errors if exist
     if (errors) {
       errorResponse.errors = errors
     }
 
-    // En desarrollo, incluir stack trace
+    // In development, include stack trace
     const nodeEnv = process.env.NODE_ENV
     if (nodeEnv === 'development') {
       if (exception instanceof Error) {
@@ -119,26 +119,26 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       }
     }
 
-    // Log del error
+    // Log the error
     const logMessage = `${request.method} ${request.url} - Status: ${status}`
 
     if (status >= 500) {
-      // Errores del servidor (5xx) - log error
+      // Server errors (5xx) - log error
       this.logger.error(
         logMessage,
         exception instanceof Error ? exception.stack : String(exception),
       )
     } else if (status >= 400) {
-      // Errores del cliente (4xx) - log warning
+      // Client errors (4xx) - log warning
       this.logger.warn(logMessage)
     }
 
-    // Enviar respuesta
+    // Send response
     response.status(status).json(errorResponse)
   }
 
   /**
-   * Type guard para verificar si es un error de Zod
+   * Type guard to check if it's a Zod error
    */
   private isZodError(exception: unknown): exception is ZodError & { errors: ZodIssue[] } {
     return (
@@ -150,7 +150,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
   }
 
   /**
-   * Maneja errores específicos de Prisma
+   * Handles specific Prisma errors
    */
   private handlePrismaError(error: Prisma.PrismaClientKnownRequestError): {
     status: number
@@ -158,57 +158,57 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     code: string
   } {
     switch (error.code) {
-      // Registro no encontrado
+      // Record not found
       case 'P2025':
         return {
           status: HttpStatus.NOT_FOUND,
-          message: 'Registro no encontrado',
+          message: 'Record not found',
           code: 'RECORD_NOT_FOUND',
         }
 
-      // Violación de clave única
+      // Unique key violation
       case 'P2002': {
         const target = error.meta?.target as string[]
         const field = target ? target.join(', ') : 'campo'
         return {
           status: HttpStatus.CONFLICT,
-          message: `Ya existe un registro con ese ${field}`,
+          message: `A record with that ${field} already exists`,
           code: 'UNIQUE_CONSTRAINT_VIOLATION',
         }
       }
 
-      // Violación de clave foránea
+      // Foreign key violation
       case 'P2003':
         return {
           status: HttpStatus.BAD_REQUEST,
-          message: 'Referencia inválida a registro relacionado',
+          message: 'Invalid reference to related record',
           code: 'FOREIGN_KEY_CONSTRAINT_VIOLATION',
         }
 
-      // Violación de constraint requerido
+      // Required constraint violation
       case 'P2011': {
         const nullConstraint = error.meta?.constraint as string
         return {
           status: HttpStatus.BAD_REQUEST,
-          message: `El campo ${nullConstraint} es requerido`,
+          message: `The field ${nullConstraint} is required`,
           code: 'NULL_CONSTRAINT_VIOLATION',
         }
       }
 
-      // Fallo de conexión
+      // Connection failure
       case 'P1001':
       case 'P1002':
         return {
           status: HttpStatus.SERVICE_UNAVAILABLE,
-          message: 'No se puede conectar a la base de datos',
+          message: 'Cannot connect to database',
           code: 'DATABASE_CONNECTION_ERROR',
         }
 
-      // Error genérico de Prisma
+      // Generic Prisma error
       default:
         return {
           status: HttpStatus.INTERNAL_SERVER_ERROR,
-          message: 'Error en la base de datos',
+          message: 'Database error',
           code: `PRISMA_ERROR_${error.code}`,
         }
     }

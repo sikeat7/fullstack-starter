@@ -40,15 +40,15 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle(process.env.SWAGGER_TITLE || 'B2B API')
     .setDescription(
-      process.env.SWAGGER_DESCRIPTION || 'API para la plataforma B2B de comerciantes y proveedores',
+      process.env.SWAGGER_DESCRIPTION || 'API for B2B platform for merchants and suppliers',
     )
     .setVersion(process.env.SWAGGER_VERSION || '1.0.0')
     .addBearerAuth()
-    .addTag('users', 'Gestión de usuarios')
-    .addTag('auth', 'Autenticación (futuro)')
-    .addTag('businesses', 'Gestión de negocios (futuro)')
-    .addTag('products', 'Catálogo de productos (futuro)')
-    .addTag('suppliers', 'Gestión de proveedores (futuro)')
+    .addTag('users', 'User management')
+    .addTag('auth', 'Authentication (future)')
+    .addTag('businesses', 'Business management (future)')
+    .addTag('products', 'Product catalog (future)')
+    .addTag('suppliers', 'Supplier management (future)')
     .build()
 
   const document = SwaggerModule.createDocument(app, swaggerConfig)

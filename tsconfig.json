@@ -1,5 +1,6 @@
 {
-  "extends": "@repo/typescript/base",
+  "extends": "@repo/typescript/base.json",
+  "files": [],
   "references": [
     { "path": "./apps/api" },
     { "path": "./apps/client" },
@@ -7,5 +8,5 @@
     { "path": "./packages/data" },
     { "path": "./packages/ui" }
   ],
-  "exclude": ["packages/api/**/*", "node_modules", "dist"]
+  "exclude": ["node_modules", "dist"]
 }

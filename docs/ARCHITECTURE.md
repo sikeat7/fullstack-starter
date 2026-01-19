@@ -1,35 +1,35 @@
 # 🏗️ Monorepo Architecture
 
-Este documento proporciona una visión completa de la arquitectura técnica del monorepo, diseñado como una plataforma fullstack escalable con TypeScript.
+This document provides a comprehensive view of the monorepo's technical architecture, designed as a scalable fullstack platform with TypeScript.
 
 ---
 
-## 📋 Tabla de Contenidos
+## 📋 Table of Contents
 
-1. [Visión General](#visión-general)
-2. [Stack Tecnológico](#stack-tecnológico)
-3. [Estructura del Monorepo](#estructura-del-monorepo)
-4. [Aplicaciones (Apps)](#aplicaciones-apps)
-5. [Paquetes Compartidos (Packages)](#paquetes-compartidos-packages)
+1. [Overview](#overview)
+2. [Technology Stack](#technology-stack)
+3. [Monorepo Structure](#monorepo-structure)
+4. [Applications (Apps)](#applications-apps)
+5. [Shared Packages](#shared-packages)
 6. [Tooling](#tooling)
-7. [Flujo de Datos](#flujo-de-datos)
-8. [Configuración de Build](#configuración-de-build)
-9. [Base de Datos](#base-de-datos)
-10. [Convenciones del Proyecto](#convenciones-del-proyecto)
-11. [Comandos Principales](#comandos-principales)
-12. [Dependencias entre Packages](#dependencias-entre-packages)
+7. [Data Flow](#data-flow)
+8. [Build Configuration](#build-configuration)
+9. [Database](#database)
+10. [Project Conventions](#project-conventions)
+11. [Main Commands](#main-commands)
+12. [Package Dependencies](#package-dependencies)
 
 ---
 
-## 🌐 Visión General
+## 🌐 Overview
 
-Este proyecto es un **starter kit fullstack** diseñado siguiendo el patrón de **monorepo** utilizando:
+This project is a **fullstack starter kit** designed following the **monorepo** pattern using:
 
-- **Turborepo**: Para orquestar builds y cache inteligente
-- **pnpm workspaces**: Para gestión eficiente de dependencias
-- **TypeScript**: Como lenguaje base en todo el proyecto
+- **Turborepo**: For orchestrating builds and smart caching
+- **pnpm workspaces**: For efficient dependency management
+- **TypeScript**: As the base language throughout the project
 
-### Arquitectura de Alto Nivel
+### High-Level Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -72,41 +72,41 @@ Este proyecto es un **starter kit fullstack** diseñado siguiendo el patrón de 
 
 ---
 
-## 🛠️ Stack Tecnológico
+## 🛠️ Technology Stack
 
 ### Backend (API)
-| Tecnología | Versión | Propósito |
-|------------|---------|-----------|
-| NestJS | ^11.0.1 | Framework backend modular |
-| Prisma ORM | ^6.14.0 | ORM type-safe para PostgreSQL |
-| Zod | ^4.1.5 | Validación de schemas |
-| PostgreSQL | 15 | Base de datos relacional |
-| Redis | 7 | Cache y sesiones |
-| Docker | - | Containerización |
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| NestJS | ^11.0.1 | Modular backend framework |
+| Prisma ORM | ^6.14.0 | Type-safe ORM for PostgreSQL |
+| Zod | ^4.1.5 | Schema validation |
+| PostgreSQL | 15 | Relational database |
+| Redis | 7 | Cache and sessions |
+| Docker | - | Containerization |
 
 ### Frontend (Client)
-| Tecnología | Versión | Propósito |
-|------------|---------|-----------|
-| Next.js | 15.5.2 | Framework React con SSR |
-| React | 19.1.0 | Biblioteca UI |
-| Shadcn/ui | latest | Componentes UI |
-| Tailwind CSS | ^4 | Estilos utility-first |
-| Turbopack | - | Bundler ultra-rápido |
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Next.js | 15.5.2 | React framework with SSR |
+| React | 19.1.0 | UI library |
+| Shadcn/ui | latest | UI components |
+| Tailwind CSS | ^4 | Utility-first styling |
+| Turbopack | - | Ultra-fast bundler |
 
 ### Monorepo & Tooling
-| Tecnología | Versión | Propósito |
-|------------|---------|-----------|
-| Turborepo | ^2.5.6 | Orquestación de monorepo |
-| pnpm | 9.15.4 | Gestión de dependencias |
+| Technology | Version | Purpose |
+|------------|---------|---------|
+| Turborepo | ^2.5.6 | Monorepo orchestration |
+| pnpm | 9.15.4 | Dependency management |
 | TypeScript | ^5.7.3 | Type-safety |
 | ESLint | ^9 | Linting |
-| Prettier | ^3 | Formateo de código |
+| Prettier | ^3 | Code formatting |
 | Husky | ^9 | Git hooks |
 | Commitlint | ^19 | Conventional commits |
 
 ---
 
-## 📁 Estructura del Monorepo
+## 📁 Monorepo Structure
 
 ```
 fullstack-starter/
@@ -114,93 +114,93 @@ fullstack-starter/
 │   ├── api/                 # Backend NestJS
 │   └── client/              # Frontend Next.js
 ├── packages/
-│   ├── config/              # Configuraciones compartidas
-│   ├── core/                # Constantes y enums
-│   ├── data/                # DTOs, schemas y validaciones (Zod)
-│   └── ui/                  # Componentes React compartidos
+│   ├── config/              # Shared configurations
+│   ├── core/                # Constants and enums
+│   ├── data/                # DTOs, schemas and validations (Zod)
+│   └── ui/                  # Shared React components
 ├── tooling/
-│   ├── eslint/              # Configuración ESLint
-│   ├── jest/                # Configuración Jest
-│   ├── prettier/            # Configuración Prettier
-│   ├── tailwind/            # Configuración Tailwind
-│   └── typescript/          # Configuración TypeScript base
-├── docs/                    # Documentación del proyecto
+│   ├── eslint/              # ESLint configuration
+│   ├── jest/                # Jest configuration
+│   ├── prettier/            # Prettier configuration
+│   ├── tailwind/            # Tailwind configuration
+│   └── typescript/          # Base TypeScript configuration
+├── docs/                    # Project documentation
 ├── package.json             # Root package.json
-├── pnpm-workspace.yaml      # Configuración workspace
-└── turbo.json               # Configuración Turborepo
+├── pnpm-workspace.yaml      # Workspace configuration
+└── turbo.json               # Turborepo configuration
 ```
 
 ---
 
-## 📦 Aplicaciones (Apps)
+## 📦 Applications (Apps)
 
 ### `apps/api` - Backend NestJS
 
-API REST construida con NestJS que proporciona endpoints para la aplicación.
+REST API built with NestJS that provides endpoints for the application.
 
-**Estructura:**
+**Structure:**
 ```
 apps/api/
 ├── prisma/
-│   ├── migrations/          # Migraciones de base de datos
-│   ├── schema.prisma        # Schema de Prisma
-│   └── seed.ts              # Seed de datos
+│   ├── migrations/          # Database migrations
+│   ├── schema.prisma        # Prisma schema
+│   └── seed.ts              # Seed data
 ├── src/
-│   ├── common/              # Utilidades compartidas
-│   ├── prisma/              # Módulo Prisma
-│   ├── users/               # Módulo de usuarios (ejemplo)
+│   ├── common/              # Shared utilities
+│   ├── prisma/              # Prisma module
+│   ├── users/               # Users module (example)
 │   ├── app.module.ts
 │   └── main.ts              # Entry point
 ├── docker-compose.yml       # PostgreSQL + Redis
 └── package.json
 ```
 
-**Características principales:**
-- ✅ Prisma ORM con PostgreSQL
-- ✅ Validación con Zod (nestjs-zod)
-- ✅ Swagger UI automático
-- ✅ Docker Compose para desarrollo
-- ✅ Filtros de excepciones globales
-- ✅ Configuración de entorno con validación
+**Main features:**
+- ✅ Prisma ORM with PostgreSQL
+- ✅ Validation with Zod (nestjs-zod)
+- ✅ Automatic Swagger UI
+- ✅ Docker Compose for development
+- ✅ Global exception filters
+- ✅ Environment configuration with validation
 
-**Puerto:** `3000`
+**Port:** `3000`
 
 ---
 
 ### `apps/client` - Frontend Next.js
 
-Aplicación web construida con Next.js 15 usando App Router y React Server Components.
+Web application built with Next.js 15 using App Router and React Server Components.
 
-**Estructura:**
+**Structure:**
 ```
 apps/client/
 ├── src/
 │   ├── app/
-│   │   ├── layout.tsx       # Layout principal
+│   │   ├── layout.tsx       # Main layout
 │   │   ├── page.tsx         # Homepage
-│   │   └── globals.css      # Estilos globales
+│   │   └── globals.css      # Global styles
 │   ├── components/
-│   │   └── ui/              # Componentes Shadcn/ui
+│   │   └── ui/              # Shadcn/ui components
 │   └── lib/
-│       └── utils.ts         # Utilidades (cn, etc.)
-├── public/                  # Assets estáticos
-├── components.json          # Configuración Shadcn/ui
+│       └── utils.ts         # Utilities (cn, etc.)
+├── public/                  # Static assets
+├── components.json          # Shadcn/ui configuration
 └── package.json
 ```
 
-**Características principales:**
-- ✅ Next.js 15 con App Router
+**Main features:**
+- ✅ Next.js 15 with App Router
 - ✅ React Server Components
-- ✅ Turbopack para desarrollo
-- ✅ Shadcn/ui pre-configurado
+- ✅ Turbopack for development
+- ✅ Pre-configured Shadcn/ui
 - ✅ Tailwind CSS v4
 - ✅ TypeScript strict mode
 
-**Puerto:** `3001`
+**Port:** `3001`
 
 ---
 
-## 📦 Paquetes Compartidos (Packages)
+## 📦 Shared Packages
 
 ### `@repo/config`
 
@@ -255,28 +255,28 @@ const user: CreateUserDto = {
 };
 ```
 
-**Estructura:**
+**Structure:**
 ```
 packages/data/
 ├── src/
-│   ├── schemas/             # Schemas Zod
+│   ├── schemas/             # Zod schemas
 │   │   ├── base.schema.ts
 │   │   └── user.schema.ts
-│   ├── validators/          # Validadores custom
+│   ├── validators/          # Custom validators
 │   └── index.ts
 ```
 
-**Ventajas:**
-- ✅ **Single Source of Truth**: Un schema para API y Client
-- ✅ **Type-safe**: TypeScript inferido de Zod
-- ✅ **Validación consistente**: Mismas reglas en backend y frontend
-- ✅ **Reutilización**: Compartido entre aplicaciones
+**Advantages:**
+- ✅ **Single Source of Truth**: One schema for API and Client
+- ✅ **Type-safe**: TypeScript inferred from Zod
+- ✅ **Consistent validation**: Same rules in backend and frontend
+- ✅ **Reusability**: Shared between applications
 
 ---
 
 ### `@repo/ui`
 
-Componentes React reutilizables.
+Reusable React components.
 
 ```typescript
 import { Button } from '@repo/ui/button';
@@ -284,7 +284,7 @@ import { Button } from '@repo/ui/button';
 <Button variant="default">Click me</Button>
 ```
 
-**Nota:** Los componentes de Shadcn/ui están en `apps/client/src/components/ui` por diseño, ya que son específicos de cada aplicación.
+**Note:** Shadcn/ui components are in `apps/client/src/components/ui` by design, as they are specific to each application.
 
 ---
 
@@ -325,23 +325,23 @@ Configuración Tailwind CSS compartida.
 
 ---
 
-## 🔄 Flujo de Datos
+## 🔄 Data Flow
 
-### 1. Cliente → API → Base de Datos
+### 1. Client → API → Database
 
 ```mermaid
 sequenceDiagram
     Client->>API: POST /users
-    API->>Zod: Validar con @repo/data
-    Zod-->>API: ✅ Datos válidos
-    API->>Prisma: Crear usuario
+    API->>Zod: Validate with @repo/data
+    Zod-->>API: ✅ Valid data
+    API->>Prisma: Create user
     Prisma->>PostgreSQL: INSERT
-    PostgreSQL-->>Prisma: Usuario creado
-    Prisma-->>API: Usuario
+    PostgreSQL-->>Prisma: User created
+    Prisma-->>API: User
     API-->>Client: 201 Created
 ```
 
-### 2. Validación Compartida
+### 2. Shared Validation
 
 **Backend (NestJS):**
 ```typescript
@@ -362,14 +362,14 @@ import { createUserSchema } from '@repo/data';
 
 const result = createUserSchema.safeParse(formData);
 if (!result.success) {
-  // Mostrar errores
+  // Show errors
   console.error(result.error);
 }
 ```
 
 ---
 
-## ⚙️ Configuración de Build
+## ⚙️ Build Configuration
 
 ### Turborepo (`turbo.json`)
 
@@ -392,40 +392,40 @@ if (!result.success) {
 }
 ```
 
-**Características:**
-- ✅ Cache inteligente de builds
-- ✅ Ejecución paralela de tareas
-- ✅ Dependencias automáticas entre packages
-- ✅ Rebuilds incrementales
+**Features:**
+- ✅ Smart build caching
+- ✅ Parallel task execution
+- ✅ Automatic dependencies between packages
+- ✅ Incremental rebuilds
 
 ---
 
-## 🗄️ Base de Datos
+## 🗄️ Database
 
 ### Prisma Schema
 
-El schema base incluye:
-- Modelo `User` con autenticación
+The base schema includes:
+- `User` model with authentication
 - Soft delete (`deletedAt`)
 - Timestamps (`createdAt`, `updatedAt`)
-- Roles de usuario (`UserRole` enum)
+- User roles (`UserRole` enum)
 
 ### Migrations
 
 ```bash
-# Crear migración
+# Create migration
 pnpm --filter api run prisma:migrate
 
-# Aplicar migraciones
+# Apply migrations
 pnpm --filter api run prisma:push
 
-# Reset base de datos
+# Reset database
 pnpm --filter api run prisma:reset
 ```
 
 ### Seed Data
 
-El seed crea usuarios de ejemplo:
+The seed creates example users:
 - Admin: `admin@example.com` / `Password123!`
 - User: `user@example.com` / `Password123!`
 
@@ -435,62 +435,62 @@ pnpm --filter api run prisma:seed
 
 ---
 
-## 📏 Convenciones del Proyecto
+## 📏 Project Conventions
 
-### Nomenclatura
+### Naming
 
-- **Archivos**: `kebab-case.ts`
-- **Componentes React**: `PascalCase.tsx`
-- **Variables/funciones**: `camelCase`
-- **Constantes**: `UPPER_SNAKE_CASE`
-- **Tipos/Interfaces**: `PascalCase`
+- **Files**: `kebab-case.ts`
+- **React Components**: `PascalCase.tsx`
+- **Variables/functions**: `camelCase`
+- **Constants**: `UPPER_SNAKE_CASE`
+- **Types/Interfaces**: `PascalCase`
 
-### Estructura de Código
+### Code Structure
 
-- **Exports con Barrels**: Usar `index.ts` para re-exportar
-- **Imports absolutos**: Usar alias `@/` en aplicaciones
-- **Type-first**: Definir tipos antes de implementación
+- **Barrel exports**: Use `index.ts` for re-exporting
+- **Absolute imports**: Use `@/` alias in applications
+- **Type-first**: Define types before implementation
 
 ### Git
 
 - **Commits**: Conventional Commits (`feat:`, `fix:`, `chore:`, etc.)
 - **Branches**: `feature/`, `fix/`, `chore/`
-- **Hooks**: Husky para pre-commit y commit-msg
+- **Hooks**: Husky for pre-commit and commit-msg
 
 ---
 
-## 🚀 Comandos Principales
+## 🚀 Main Commands
 
-### Desarrollo
+### Development
 
 ```bash
-# Iniciar todo el proyecto
+# Start entire project
 pnpm dev
 
-# Iniciar solo API
+# Start only API
 pnpm dev:api
 
-# Iniciar solo Client
+# Start only Client
 pnpm dev:client
 ```
 
-### Base de Datos
+### Database
 
 ```bash
-# Iniciar PostgreSQL y Redis
+# Start PostgreSQL and Redis
 pnpm db:up
 
-# Detener contenedores
+# Stop containers
 pnpm db:down
 
-# Abrir Prisma Studio
+# Open Prisma Studio
 pnpm db:studio
 ```
 
 ### Build & Deploy
 
 ```bash
-# Build todo
+# Build everything
 pnpm build
 
 # Build API
@@ -503,13 +503,13 @@ pnpm build:client
 ### Linting & Formatting
 
 ```bash
-# Lint todo
+# Lint everything
 pnpm lint
 
-# Lint con fix
+# Lint with fix
 pnpm lint:fix
 
-# Format todo
+# Format everything
 pnpm format
 ```
 
@@ -525,7 +525,7 @@ pnpm test:e2e
 
 ---
 
-## 🔗 Dependencias entre Packages
+## 🔗 Package Dependencies
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -557,54 +557,54 @@ pnpm test:e2e
 └──────────────────────────────────────────────┘
 ```
 
-**Reglas:**
-- Apps pueden importar de cualquier package
-- Packages solo importan de otros packages
-- No hay dependencias circulares
-- `@repo/data` es el más usado (schemas compartidos)
+**Rules:**
+- Apps can import from any package
+- Packages only import from other packages
+- No circular dependencies
+- `@repo/data` is the most used (shared schemas)
 
 ---
 
-## 🎯 Ventajas de esta Arquitectura
+## 🎯 Advantages of this Architecture
 
-### 1. **Type Safety End-to-End**
-- Zod schemas en `@repo/data` → TypeScript inferido
-- Mismo schema en API y Client
-- Cambios en un lugar se propagan a toda la app
+### 1. **End-to-End Type Safety**
+- Zod schemas in `@repo/data` → TypeScript inferred
+- Same schema in API and Client
+- Changes in one place propagate to the entire app
 
 ### 2. **DRY (Don't Repeat Yourself)**
-- Schemas compartidos
-- Componentes reutilizables
-- Configuraciones centralizadas
+- Shared schemas
+- Reusable components
+- Centralized configurations
 
-### 3. **Escalabilidad**
-- Fácil agregar nuevas apps
-- Packages independientes
-- Build incremental con Turborepo
+### 3. **Scalability**
+- Easy to add new apps
+- Independent packages
+- Incremental build with Turborepo
 
 ### 4. **Developer Experience**
-- Hot reload rápido
-- Intellisense completo
-- Errores en tiempo de desarrollo
+- Fast hot reload
+- Complete Intellisense
+- Development-time errors
 
-### 5. **Mantenibilidad**
-- Código organizado
-- Cambios localizados
-- Testing simplificado
-
----
-
-## 🔐 Seguridad
-
-- ✅ Validación de entorno en `@repo/config`
-- ✅ Validación de datos con Zod
-- ✅ Prisma previene SQL injection
-- ✅ Variables sensibles en `.env` (gitignored)
-- ✅ Bcrypt para passwords
+### 5. **Maintainability**
+- Organized code
+- Localized changes
+- Simplified testing
 
 ---
 
-## 📚 Recursos Adicionales
+## 🔐 Security
+
+- ✅ Environment validation in `@repo/config`
+- ✅ Data validation with Zod
+- ✅ Prisma prevents SQL injection
+- ✅ Sensitive variables in `.env` (gitignored)
+- ✅ Bcrypt for passwords
+
+---
+
+## 📚 Additional Resources
 
 - [Turborepo Docs](https://turbo.build/repo/docs)
 - [pnpm Workspaces](https://pnpm.io/workspaces)
@@ -616,4 +616,4 @@ pnpm test:e2e
 
 ---
 
-**¿Tienes preguntas sobre la arquitectura?** Revisa este documento o consulta la documentación oficial de las tecnologías utilizadas.
+**Have questions about the architecture?** Review this document or consult the official documentation of the technologies used.
