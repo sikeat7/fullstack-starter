@@ -19,25 +19,25 @@ const envSchema = z.object({
     .default('development'),
 
   // ===========================================
-  // Base de Datos
+  // Database
   // ===========================================
-  DATABASE_URL: z.string().url('DATABASE_URL debe ser una URL válida'),
+  DATABASE_URL: z.string().url('DATABASE_URL must be a valid URL'),
 
-  // Estas son opcionales porque se usan solo en docker-compose
+  // Optional: used only by docker-compose
   POSTGRES_USER: z.string().optional(),
   POSTGRES_PASSWORD: z.string().optional(),
   POSTGRES_DB: z.string().optional(),
   DB_PORT: z.coerce.number().optional(),
 
   // ===========================================
-  // Aplicación
+  // Application
   // ===========================================
   PORT: z.coerce.number().min(1).max(65535).default(3000),
   APP_PORT: z.coerce.number().min(1).max(65535).default(3000),
   API_PREFIX: z.string().default('api/v1'),
 
   // ===========================================
-  // Redis (Opcional)
+  // Redis (optional)
   // ===========================================
   REDIS_URL: z.string().url().optional(),
   REDIS_PORT: z.coerce.number().optional().default(6379),
@@ -48,10 +48,10 @@ const envSchema = z.object({
   // ===========================================
   JWT_SECRET: z
     .string()
-    .min(32, 'JWT_SECRET debe tener al menos 32 caracteres')
+    .min(32, 'JWT_SECRET must be at least 32 characters')
     .refine(
       (val: string) => {
-        // En producción, no permitir valores por defecto inseguros
+        // In production, disallow insecure default values
         const nodeEnv = process.env.NODE_ENV;
         if (nodeEnv === 'production') {
           return !val.includes('dev-secret') && !val.includes('change-in-production');
@@ -59,7 +59,7 @@ const envSchema = z.object({
         return true;
       },
       {
-        message: 'JWT_SECRET en producción debe ser un valor seguro',
+        message: 'In production, JWT_SECRET must be a secure value',
       },
     ),
   JWT_EXPIRES_IN: z.string().default('7d'),
@@ -90,31 +90,31 @@ const envSchema = z.object({
   SWAGGER_TITLE: z.string().default('B2B API'),
   SWAGGER_DESCRIPTION: z
     .string()
-    .default('Sistema SaaS B2B para comerciantes y proveedores'),
+    .default('B2B SaaS system for merchants and suppliers'),
   SWAGGER_VERSION: z.string().default('1.0.0'),
 });
 
 /**
- * Tipo inferido del schema
+ * Inferred type from the schema
  */
 export type EnvConfig = z.infer<typeof envSchema>;
 
 /**
- * Valida las variables de entorno al iniciar la aplicación
- * Si hay errores, imprime los detalles y termina el proceso
+ * Validates environment variables at application startup.
+ * If validation fails, prints details and exits the process.
  */
 export const validateEnv = (): EnvConfig => {
   const result = envSchema.safeParse(process.env);
 
   if (!result.success) {
-    console.error('❌ Variables de entorno inválidas:');
+    console.error('❌ Invalid environment variables:');
     console.error(JSON.stringify(result.error.format(), null, 2));
     process.exit(1);
   }
 
-  // En desarrollo, mostrar las variables cargadas (sin secretos)
+  // In development, print loaded variables (without secrets)
   if (result.data.NODE_ENV === 'development') {
-    console.log('✅ Variables de entorno validadas correctamente');
+    console.log('✅ Environment variables validated successfully');
     console.log(`   NODE_ENV: ${result.data.NODE_ENV}`);
     console.log(`   PORT: ${result.data.PORT}`);
     console.log(`   DATABASE_URL: ${result.data.DATABASE_URL.replace(/:[^:@]+@/, ':****@')}`);

@@ -1,39 +1,38 @@
-# Guía del Monorepo (este proyecto)
+# Monorepo Guide (this repo)
 
-Este repo es un **monorepo** basado en **pnpm workspaces** + **Turborepo**, con:
+This repository is a **pnpm workspaces** + **Turborepo** monorepo:
 
 - **Frontend**: Next.js (`apps/client`)
 - **Backend**: NestJS + Prisma (`apps/api`)
-- **Paquetes compartidos**: `packages/*` (ej: `@repo/data`, `@repo/i18n`, `@repo/ui`)
+- **Shared packages**: `packages/*` (e.g. `@repo/data`, `@repo/i18n`, `@repo/ui`)
 
-La idea es que el código compartido viva en `packages/` y sea consumido por las apps sin duplicación.
+The goal is to keep shared code inside `packages/` and consume it from apps without duplication.
 
 ---
 
-## 1) Estructura del repo
+## 1) Repo structure
 
-- **`apps/`**: aplicaciones/servicios “ejecutables”
+- **`apps/`**: runnable applications/services
   - `apps/client`: Next.js
   - `apps/api`: NestJS
-- **`packages/`**: librerías reutilizables (no “apps”)
-  - `@repo/data`: esquemas/tipos (Zod) compartidos
-  - `@repo/i18n`: traducciones compartidas (JSON) + utilidades
-  - `@repo/ui`: componentes UI compartidos
-- **`tooling/`**: config compartida (eslint, typescript, prettier, etc.)
+- **`packages/`**: reusable libraries (not apps)
+  - `@repo/data`: shared Zod schemas/types/entities
+  - `@repo/i18n`: shared locales + helpers
+  - `@repo/ui`: shared UI components (optional)
+- **`tooling/`**: shared configuration (eslint, typescript, prettier, etc.)
 
-Esto sigue la estructura recomendada por Turborepo: apps separadas de packages, y cada package con su `package.json` y entrypoints bien definidos vía `exports`.  
-Referencia: https://turborepo.dev/docs/crafting-your-repository/structuring-a-repository
+This follows Turborepo's recommended layout:
+`https://turborepo.dev/docs/crafting-your-repository/structuring-a-repository`
 
 ---
 
-## 2) Cómo se resuelven imports (convención del proyecto)
+## 2) Import conventions
 
-En un monorepo sano, querés mirar un import y entender “de dónde viene”:
+In a healthy monorepo, you should be able to look at an import and immediately know where it comes from.
 
-### **A) Paquetes compartidos**
-- **Prefijo**: `@repo/*`
-- **Significa**: “esto vive en `packages/*` (workspace package)”
-- Ejemplos:
+### A) Shared packages
+- **Prefix**: `@repo/*`
+- **Meaning**: a workspace package under `packages/*`
 
 ```ts
 import { CreateUser } from '@repo/data';
@@ -41,106 +40,103 @@ import en from '@repo/i18n/locales/en.json';
 import { Button } from '@repo/ui/button';
 ```
 
-### **B) Imports internos del Frontend**
-- **Prefijo**: `@/*`
+### B) Client internal imports
+- **Prefix**: `@/*`
 - **Config**: `apps/client/tsconfig.json` (`paths: { "@/*": ["./src/*"] }`)
-- Ejemplo:
 
 ```ts
 import { Button } from '@/components/ui/button';
 ```
 
-### **C) Imports internos del Backend**
-- **Prefijo**: `#/*`
+### C) API internal imports
+- **Prefix**: `#/*`
 - **Config**: `apps/api/tsconfig.json` (`paths: { "#/*": ["src/*"] }`)
-- Ejemplo:
 
 ```ts
 import { PrismaService } from '#/prisma/prisma.service';
 ```
 
-**Regla de oro:** evitá `../../..` dentro de las apps y evitá importar `src/` de otro paquete.
+**Rule of thumb**: avoid `../../..` inside apps and avoid importing another package's `src/` directly.
 
 ---
 
-## 3) “Compiled packages”: por qué existe `dist/`
+## 3) Compiled packages: why `dist/` exists
 
-Este repo usa el patrón de **paquetes compilados**:
+This repo uses the **compiled packages** pattern:
 
-- El código fuente vive en `packages/<pkg>/src`
-- El output compilado vive en `packages/<pkg>/dist`
-- Los paquetes declaran sus entrypoints con:
+- Source lives in `packages/<pkg>/src`
+- Build output lives in `packages/<pkg>/dist`
+- Packages declare entrypoints via:
   - `"main": "dist/index.js"`
   - `"types": "dist/index.d.ts"`
   - `"exports": { ... }`
 
-Esto es importante porque:
-- Next/Nest/Node consumen `@repo/*` como **paquetes reales**
-- TypeScript obtiene tipos desde `.d.ts`
-- Evitás errores tipo `rootDir`/`TS6059` que aparecen cuando una app “absorbe” el `src` de otro paquete
+Why this matters:
+- Next/Nest/Node consume `@repo/*` as real packages
+- TypeScript resolves types from `.d.ts`
+- Avoids `rootDir`/`TS6059`-style issues that happen when an app “absorbs” another package's `src`
 
-### Limpieza
-Cada package tiene un `clean` que borra:
+### Clean tasks
+Each package provides a `clean` script that removes:
 - `dist/`
-- `tsconfig.tsbuildinfo` (cache incremental de TypeScript)
+- `tsconfig.tsbuildinfo` (TypeScript incremental cache)
 
-Eso evita builds “incompletos” donde falta `dist/index.js` y luego el runtime no puede resolver el paquete.
-
----
-
-## 4) Turborepo: cómo se calcula el orden y por qué `dev` depende de `build`
-
-Turborepo usa el grafo de dependencias del workspace (lockfile + `package.json`) para saber:
-
-- Si `apps/client` depende de `@repo/i18n`, primero hay que construir `@repo/i18n`.
-- Luego recién se ejecuta `dev` en la app.
-
-En `turbo.json`, el task `dev` depende de `^build`. Esto significa:
-
-> “Antes de correr `dev` para este paquete/app, corré `build` de sus dependencias internas”
-
-Resultado: cuando corrés `pnpm dev`, Turborepo:
-1) construye libs compartidas
-2) levanta `client` y `api`
+This avoids half-built states where `dist/index.js` is missing and the runtime can't resolve a package.
 
 ---
 
-## 5) i18n compartido (single source of truth)
+## 4) Turborepo: why `dev` depends on `build`
 
-Objetivo: **un solo `es.json` y `en.json`** para front y back.
+Turborepo uses the workspace dependency graph (lockfile + `package.json`) to know:
 
-### Dónde viven
+- If `apps/client` depends on `@repo/i18n`, `@repo/i18n` must build first
+- Then `dev` can start the app
+
+In `turbo.json`, `dev` depends on `^build`. Meaning:
+> Before running `dev` for this package/app, run `build` for its internal dependencies.
+
+So when you run `pnpm dev`, Turborepo:
+1) builds shared libs
+2) starts `client` and `api`
+
+---
+
+## 5) Shared i18n (single source of truth)
+
+Goal: **one** `es.json` and `en.json` used by both frontend and backend.
+
+### Where they live
 - `packages/i18n/src/locales/es.json`
 - `packages/i18n/src/locales/en.json`
 
-### Cómo se consumen en el frontend (Next + next-intl)
-El frontend carga los mensajes desde el paquete:
+### How the frontend consumes them (Next + next-intl)
 
 ```ts
 import en from '@repo/i18n/locales/en.json';
 import es from '@repo/i18n/locales/es.json';
 ```
 
-### Cómo se consumen en el backend (Nest)
-El backend usa `nestjs-i18n` y apunta al directorio de JSON del paquete, resuelto de forma robusta (sin rutas frágiles).
+### How the backend consumes them (Nest)
+
+The backend uses `nestjs-i18n` and points to the JSON directory from the package in a robust way (no fragile relative paths).
 
 ---
 
-## 6) Comandos habituales
+## 6) Common commands
 
-### Instalar dependencias
+### Install
 
 ```bash
 pnpm install
 ```
 
-### Desarrollo (monorepo)
+### Dev (monorepo)
 
 ```bash
 pnpm dev
 ```
 
-Esto levanta:
+This starts:
 - Next: `http://localhost:3001`
 - API: `http://localhost:3000/api/v1`
 - Swagger: `http://localhost:3000/api/docs`
@@ -153,11 +149,11 @@ pnpm build
 
 ---
 
-## 7) Base de datos (Postgres) y healthcheck
+## 7) Database (Postgres) & health checks
 
-La API usa Prisma y se conecta a Postgres en `localhost:5432` por defecto (según tu `DATABASE_URL`).
+The API uses Prisma and connects to Postgres on `localhost:5432` by default (based on `DATABASE_URL`).
 
-### Levantar DB (Docker)
+### Start DB (Docker)
 
 ```bash
 pnpm db:up
@@ -165,19 +161,20 @@ pnpm db:up
 
 ### Health endpoints
 
-- `GET /api/v1/health` → estado general
-- `GET /api/v1/health/db` → **estado de DB**
+- `GET /api/v1/health` → general status
+- `GET /api/v1/health/db` → DB status
 
-Si la DB no está corriendo, `/health/db` devuelve `status: "down"` en vez de tirar abajo la API.
+If the DB is not running, `/health/db` returns `status: "down"` instead of crashing the API.
 
 ---
 
-## 8) Troubleshooting rápido
+## 8) Quick troubleshooting
 
 ### “Module not found: Can't resolve '@repo/i18n'”
-Normalmente significa que falta `dist/` o está incompleto.
 
-Solución típica:
+Usually means `dist/` is missing or incomplete.
+
+Typical fix:
 
 ```bash
 pnpm -r --filter @repo/core --filter @repo/data --filter @repo/i18n --filter @repo/config clean
@@ -185,26 +182,21 @@ pnpm -r --filter @repo/core --filter @repo/data --filter @repo/i18n --filter @re
 ```
 
 ### “useTranslations is not callable within an async component”
-En Server Components `async`, usar:
+
+In async Server Components, use:
 - `await getTranslations()` (server)
-En Client Components, usar:
+
+In Client Components, use:
 - `useTranslations()` (hook)
 
 ---
 
-## 9) Cómo agregar un nuevo package compartido
+## 9) Adding a new shared package
 
-Checklist mínima:
+Minimal checklist:
 
-1) Crear `packages/<nuevo>/package.json` con `name` y `exports`
-2) `tsconfig.json` con `rootDir: "src"` y `outDir: "dist"` y `declaration: true`
-3) Agregar dependencia en apps con `"workspace:*"`
-4) Asegurar que tenga `build` y `clean`
-
----
-
-Si querés, podemos extender esta guía con:
-- reglas de versionado
-- release strategy
-- patrón para “schemas + DTOs” con Zod
+1) Create `packages/<new>/package.json` with `name` and `exports`
+2) Add `tsconfig.json` with `rootDir: "src"`, `outDir: "dist"`, and `declaration: true`
+3) Add the dependency to apps using `"workspace:*"`
+4) Ensure it has `build` and `clean`
 

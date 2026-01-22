@@ -10,10 +10,10 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
     try {
       await this.$connect()
     } catch (err) {
-      // En dev, es común correr el monorepo sin Docker/DB levantada.
-      // No queremos que el proceso muera: arrancamos igual y logueamos el warning.
+      // In dev, it's common to run the monorepo without Docker/DB running.
+      // We don't want the process to crash: we still boot and log a warning.
       this.logger.warn(
-        `No se pudo conectar a la DB en el arranque. La API iniciará igualmente, pero endpoints que requieran DB fallarán. Error: ${String(
+        `Could not connect to the DB at startup. The API will still start, but DB-dependent endpoints will fail. Error: ${String(
           (err as any)?.message ?? err,
         )}`,
       )

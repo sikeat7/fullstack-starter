@@ -10,10 +10,12 @@
     "clean": "rm -rf .next"
   },
   "dependencies": {
-    "@radix-ui/react-slot": "^1.2.4",
+    "@hookform/resolvers": "^5.2.2",
     "@repo/data": "workspace:*",
     "@repo/i18n": "workspace:*",
     "@repo/ui": "workspace:*",
+    "@tanstack/react-query": "^5.90.19",
+    "@tanstack/react-table": "^8.21.3",
     "class-variance-authority": "latest",
     "clsx": "latest",
     "lucide-react": "latest",
@@ -21,6 +23,7 @@
     "next-intl": "latest",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-hook-form": "^7.71.1",
     "tailwind-merge": "latest",
     "tailwindcss-animate": "^1.0.7"
   },
@@ -30,6 +33,7 @@
     "@repo/tailwind": "workspace:*",
     "@repo/typescript": "workspace:*",
     "@tailwindcss/postcss": "^4",
+    "@tanstack/react-query-devtools": "^5.91.2",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

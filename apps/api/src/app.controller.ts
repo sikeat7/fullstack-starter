@@ -31,7 +31,7 @@ export class AppController {
     error?: string;
   }> {
     try {
-      // Un ping simple y rápido a la DB
+      // A quick DB ping
       await this.prisma.$queryRaw`SELECT 1`;
       return { status: 'ok', timestamp: new Date().toISOString() };
     } catch (err) {

@@ -204,26 +204,26 @@ apps/client/
 
 ### `@repo/config`
 
-Configuraciones compartidas y validación de variables de entorno.
+Shared configuration and environment variable validation.
 
 ```typescript
 import { config } from '@repo/config';
 
-// Variables validadas con Zod
+// Zod-validated variables
 console.log(config.DATABASE_URL);
 console.log(config.JWT_SECRET);
 ```
 
-**Exporta:**
-- `config`: Variables de entorno validadas
-- `validateEnv()`: Función de validación
-- Tipos TypeScript inferidos
+**Exports:**
+- `config`: Validated environment variables
+- `validateEnv()`: Validation function
+- Inferred TypeScript types
 
 ---
 
 ### `@repo/core`
 
-Constantes y enums compartidos entre aplicaciones.
+Shared constants and enums across applications.
 
 ```typescript
 import { UserRole } from '@repo/core';
@@ -231,23 +231,23 @@ import { UserRole } from '@repo/core';
 const role: UserRole = UserRole.ADMIN;
 ```
 
-**Exporta:**
+**Exports:**
 - Enums: `UserRole`
-- Constantes de la aplicación
+- Application constants
 
 ---
 
 ### `@repo/data`
 
-Schemas de validación con Zod y DTOs TypeScript.
+Zod validation schemas and TypeScript DTOs.
 
 ```typescript
 import { createUserSchema, type CreateUserDto } from '@repo/data';
 
-// Validar datos
+// Validate data
 const result = createUserSchema.safeParse(userData);
 
-// Tipos TypeScript automáticos
+// Automatic TypeScript types
 const user: CreateUserDto = {
   email: 'user@example.com',
   firstName: 'John',
@@ -292,36 +292,36 @@ import { Button } from '@repo/ui/button';
 
 ### `@repo/eslint`
 
-Configuraciones ESLint compartidas para diferentes tipos de proyectos.
+Shared ESLint configurations for different project types.
 
-**Configuraciones disponibles:**
-- `base.js`: Configuración base TypeScript
-- `nest.js`: Para aplicaciones NestJS
-- `next.js`: Para aplicaciones Next.js
-- `react-internal.js`: Para librerías React
-- `library.js`: Para librerías TypeScript genéricas
+**Available configs:**
+- `base.js`: Base TypeScript config
+- `nest.js`: For NestJS apps
+- `next.js`: For Next.js apps
+- `react-internal.js`: For React libraries
+- `library.js`: For generic TypeScript libraries
 
 ### `@repo/typescript`
 
-Configuraciones TypeScript compartidas.
+Shared TypeScript configurations.
 
-**Configuraciones disponibles:**
-- `base.json`: Base TypeScript
-- `nestjs.json`: Para NestJS
-- `nextjs.json`: Para Next.js
-- `react-library.json`: Para librerías React
+**Available configs:**
+- `base.json`: Base TypeScript config
+- `nestjs.json`: For NestJS
+- `nextjs.json`: For Next.js
+- `react-library.json`: For React libraries
 
 ### `@repo/prettier`
 
-Configuración Prettier consistente.
+Consistent Prettier configuration.
 
 ### `@repo/jest`
 
-Configuraciones Jest para testing.
+Jest configurations for testing.
 
 ### `@repo/tailwind`
 
-Configuración Tailwind CSS compartida.
+Shared Tailwind CSS configuration.
 
 ---
 

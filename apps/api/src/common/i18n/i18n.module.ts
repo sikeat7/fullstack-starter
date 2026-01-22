@@ -13,8 +13,8 @@ import { createRequire } from 'node:module';
     I18nModule.forRoot({
       fallbackLanguage: 'es',
       loaderOptions: {
-        // Resolvemos la ruta del paquete de forma robusta (sin asumir estructura de carpetas)
-        // Esto mantiene la fuente única de verdad en @repo/i18n/src/locales
+        // Resolve the package path robustly (without assuming folder structure)
+        // This keeps the single source of truth in @repo/i18n/src/locales
         path: path.dirname(
           createRequire(__filename).resolve('@repo/i18n/locales/es.json'),
         ),

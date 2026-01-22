@@ -6,7 +6,8 @@
 import { z } from 'zod';
 import { baseSchema } from './base.schema';
 import { USER_ROLE_VALUES } from '@repo/core';
-import { emailField, textField } from '../validators';
+// Import directo para evitar ciclos: schemas -> validators(index) -> user.validators -> schemas
+import { emailField, textField } from '../validators/common.validators';
 
 export const userSchema = baseSchema.extend({
   email: emailField(),
