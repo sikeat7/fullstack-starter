@@ -1,7 +1,7 @@
 {
-  "name": "@repo/core",
+  "name": "@repo/i18n",
   "version": "0.0.1",
-  "description": "Core shared logic and constants",
+  "description": "Shared internationalization utilities and translations",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -17,6 +17,13 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.js"
-    }
+    },
+    "./locales": {
+      "types": "./dist/locales/index.d.ts",
+      "import": "./dist/locales/index.js",
+      "require": "./dist/locales/index.js"
+    },
+    "./locales/en.json": "./src/locales/en.json",
+    "./locales/es.json": "./src/locales/es.json"
   }
 }
