@@ -1,0 +1,47 @@
+{
+  "common": {
+    "welcome": "Bienvenido",
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "create": "Crear",
+    "search": "Buscar",
+    "next": "Siguiente",
+    "previous": "Anterior"
+  },
+  "auth": {
+    "login": "Iniciar Sesión",
+    "logout": "Cerrar Sesión",
+    "register": "Registrarse",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar Contraseña",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "resetPassword": "Restablecer Contraseña"
+  },
+  "users": {
+    "name": "Nombre",
+    "email": "Correo Electrónico",
+    "role": "Rol",
+    "createdAt": "Fecha de Creación",
+    "updatedAt": "Fecha de Actualización"
+  },
+  "home": {
+    "title": "Panel de Control del Monorepo",
+    "description": "Este proyecto es una base sólida fullstack diseñada para escalar.",
+    "status": "Estado de los Módulos",
+    "verified": "Verificado y Funcionando",
+    "techStack": "Tecnologías Utilizadas",
+    "tech": {
+      "nextjs": "Next.js 15 (Frontend)",
+      "nestjs": "NestJS 11 (Backend)",
+      "turborepo": "Turborepo (Monorepo)",
+      "prisma": "Prisma (ORM)",
+      "tailwind": "Tailwind CSS (Estilos)",
+      "i18n": "i18n Compartido (Traducciones)"
+    }
+  }
+}

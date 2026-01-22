@@ -6,10 +6,10 @@ import { GlobalExceptionFilter } from './common/filters/http-exception.filter'
 
 async function bootstrap() {
   // ========================================
-  // Validación de Variables de Entorno
+  // Environment variables validation
   // ========================================
-  // El config se valida automáticamente al importarse
-  // Si hay errores, el proceso terminará antes de crear la app
+  // Config is validated automatically on import.
+  // If validation fails, the process exits before creating the app.
 
   const app = await NestFactory.create(AppModule)
 
