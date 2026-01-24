@@ -1,6 +1,7 @@
 import { Controller, Get } from '@nestjs/common'
-import { AppService } from './app.service'
 import { I18n, I18nContext } from 'nestjs-i18n';
+
+import { AppService } from './app.service'
 import { PrismaService } from './prisma/prisma.service';
 
 @Controller()

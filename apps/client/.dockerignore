@@ -1,0 +1,24 @@
+# Dependencies
+node_modules
+
+# Build output
+.next
+out
+
+# Testing
+coverage
+*.test.tsx
+*.spec.tsx
+
+# Logs
+*.log
+
+# Environment
+.env*.local
+
+# IDE
+.vscode
+.idea
+
+# Storybook
+storybook-static

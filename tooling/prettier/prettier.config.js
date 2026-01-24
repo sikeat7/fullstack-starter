@@ -12,6 +12,9 @@ const config = {
   tabWidth: 2,
   printWidth: 80,
   endOfLine: 'lf',
+  plugins: ['prettier-plugin-tailwindcss'],
+  // Tailwind class ordering
+  tailwindFunctions: ['cn', 'cva', 'clsx'],
 };
 
 export default config;

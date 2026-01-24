@@ -1,8 +1,12 @@
+import { Geist, Geist_Mono } from "next/font/google";
+import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { notFound } from 'next/navigation';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
+
+import { isInArray } from '@repo/core';
 import { locales } from '@repo/i18n';
-import { Geist, Geist_Mono } from "next/font/google";
+
 import { QueryProvider } from '@/lib/react-query';
 import "../globals.css";
 
@@ -30,7 +34,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
 
   // Ensure that the incoming `locale` is valid
-  if (!locales.includes(locale as any)) {
+  if (!isInArray(locale, locales)) {
     notFound();
   }
 
@@ -46,11 +50,13 @@ export default async function LocaleLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <QueryProvider>
-          <NextIntlClientProvider messages={messages}>
-            {children}
-          </NextIntlClientProvider>
-        </QueryProvider>
+        <NuqsAdapter>
+          <QueryProvider>
+            <NextIntlClientProvider messages={messages}>
+              {children}
+            </NextIntlClientProvider>
+          </QueryProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );
