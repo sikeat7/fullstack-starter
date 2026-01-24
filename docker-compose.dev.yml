@@ -1,0 +1,37 @@
+# ===================================
+# Development Docker Compose Override
+# Use with: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+# ===================================
+
+services:
+  # Database with persistent volume
+  db:
+    ports:
+      - '5432:5432'
+
+  # Redis with persistent volume
+  redis:
+    ports:
+      - '6379:6379'
+
+  # API in development mode (not built from Dockerfile)
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.dev
+    volumes:
+      - ./apps/api/src:/app/apps/api/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development
+
+  # Client in development mode (not built from Dockerfile)
+  client:
+    build:
+      context: .
+      dockerfile: apps/client/Dockerfile.dev
+    volumes:
+      - ./apps/client/src:/app/apps/client/src
+      - ./packages:/app/packages
+    environment:
+      NODE_ENV: development

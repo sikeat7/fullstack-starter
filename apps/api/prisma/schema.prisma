@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["omitApi"]
 }
 
 // Note: `url` in datasource is valid for Prisma 6.x
@@ -39,6 +40,10 @@ model User {
   updatedAt DateTime  @updatedAt @map("updated_at")
   deletedAt DateTime? @map("deleted_at")
 
+  // Indexes for common queries
+  @@index([email, deletedAt], name: "idx_users_email_deleted")
+  @@index([role, isActive, deletedAt], name: "idx_users_role_active_deleted")
+  @@index([createdAt], name: "idx_users_created_at")
   @@map("users")
 }
 

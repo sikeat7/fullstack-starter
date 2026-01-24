@@ -6,9 +6,10 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common'
-import type { Request, Response } from 'express'
 import { Prisma } from '@prisma/client'
-import type { z } from '@repo/data'
+
+import type { Request, Response } from 'express'
+import type { z } from 'zod'
 
 type ZodError = z.ZodError
 type ZodIssue = z.ZodIssue

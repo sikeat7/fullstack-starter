@@ -1,174 +1,157 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from '@repo/data'; // ✅ Import Zod from the monorepo shared package
 import { useState } from 'react';
+import { z } from 'zod';
+
+import { createUserSchema } from '@repo/data';
+
+type CreateUserOutput = z.output<typeof createUserSchema>;
+
+import { Button } from '@/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { useUserForm } from '@/hooks/use-user-form';
 
 /**
- * Example: react-hook-form + Zod validation
+ * Example: React Hook Form + Zod + Shadcn UI
  *
- * react-hook-form: High-performance forms with fewer re-renders
- * @hookform/resolvers: Integration with validation libraries
- * zod: Schema validation with TypeScript types (via @repo/data)
+ * This example demonstrates:
+ * - Using shared validation schemas from @repo/data
+ * - Custom form hooks for reusability
+ * - Shadcn Form components for accessible forms
  */
-
-// 1) Define a validation schema with Zod
-const userSchema = z.object({
-  name: z
-    .string()
-    .min(3, 'Name must be at least 3 characters')
-    .max(50, 'Name cannot exceed 50 characters'),
-  email: z.string().email('Invalid email'),
-  age: z
-    .number({
-      required_error: 'Age is required',
-      invalid_type_error: 'Age must be a number',
-    })
-    .min(18, 'You must be at least 18 years old')
-    .max(100, 'Invalid age'),
-  bio: z.string().min(10, 'Bio must be at least 10 characters').optional(),
-});
-
-// 2) Infer the TypeScript type from the schema
-type UserFormData = z.infer<typeof userSchema>;
-
 export function FormExample() {
-  const [submittedData, setSubmittedData] = useState<UserFormData | null>(null);
+  const [submittedData, setSubmittedData] = useState<CreateUserOutput | null>(null);
 
-  // 3) Initialize the form with react-hook-form
-  const {
-    register, // Registers inputs
-    handleSubmit, // Handles submit
-    formState: { errors, isSubmitting }, // Form state
-    reset, // Resets the form
-  } = useForm<UserFormData>({
-    resolver: zodResolver(userSchema), // Zod integration
-    defaultValues: {
-      name: '',
-      email: '',
-      age: undefined,
-      bio: '',
+  const { form, onSubmit, isSubmitting, reset } = useUserForm({
+    onSubmit: async (data) => {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      console.log('Submitted data:', data);
+      setSubmittedData(data);
     },
   });
 
-  // 4) Runs when the form is submitted
-  const onSubmit = async (data: UserFormData) => {
-    // Simulate an async request
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    console.log('Submitted data:', data);
-    setSubmittedData(data);
+  const handleReset = () => {
+    reset();
+    setSubmittedData(null);
   };
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold mb-2">React Hook Form + Zod</h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          Reactive forms with schema validation
-        </p>
-      </div>
+    <Card className="w-full max-w-md">
+      <CardHeader>
+        <CardTitle>Create User</CardTitle>
+        <CardDescription>
+          Form validation using shared schemas from @repo/data
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Form {...form}>
+          <form onSubmit={onSubmit} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="email"
+                      placeholder="john@example.com"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Name */}
-        <div>
-          <label htmlFor="name" className="block text-sm font-medium mb-1">
-            Name *
-          </label>
-          <input
-            {...register('name')}
-            id="name"
-            type="text"
-            className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-            placeholder="Jane Doe"
-          />
-          {errors.name && (
-            <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>
-          )}
-        </div>
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Password</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="password"
+                      placeholder="Min 8 characters"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
-        {/* Email */}
-        <div>
-          <label htmlFor="email" className="block text-sm font-medium mb-1">
-            Email *
-          </label>
-          <input
-            {...register('email')}
-            id="email"
-            type="email"
-            className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-            placeholder="jane@example.com"
-          />
-          {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
-          )}
-        </div>
+            <div className="grid grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="firstName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>First Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="John" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        {/* Age */}
-        <div>
-          <label htmlFor="age" className="block text-sm font-medium mb-1">
-            Age *
-          </label>
-          <input
-            {...register('age', { valueAsNumber: true })}
-            id="age"
-            type="number"
-            className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-            placeholder="25"
-          />
-          {errors.age && (
-            <p className="text-red-500 text-sm mt-1">{errors.age.message}</p>
-          )}
-        </div>
+              <FormField
+                control={form.control}
+                name="lastName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Last Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Doe" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
 
-        {/* Bio */}
-        <div>
-          <label htmlFor="bio" className="block text-sm font-medium mb-1">
-            Bio (optional)
-          </label>
-          <textarea
-            {...register('bio')}
-            id="bio"
-            rows={3}
-            className="w-full px-3 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
-            placeholder="Tell us about yourself..."
-          />
-          {errors.bio && (
-            <p className="text-red-500 text-sm mt-1">{errors.bio.message}</p>
-          )}
-        </div>
+            <div className="flex gap-2 pt-4">
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? 'Creating...' : 'Create User'}
+              </Button>
+              <Button type="button" variant="outline" onClick={handleReset}>
+                Reset
+              </Button>
+            </div>
+          </form>
+        </Form>
 
-        {/* Actions */}
-        <div className="flex gap-2">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
-          >
-            {isSubmitting ? 'Submitting...' : 'Submit'}
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              reset();
-              setSubmittedData(null);
-            }}
-            className="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700"
-          >
-            Reset
-          </button>
-        </div>
-      </form>
-
-      {/* Submitted data */}
-      {submittedData && (
-        <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-md">
-          <h3 className="font-semibold mb-2">✅ Submitted data:</h3>
-          <pre className="text-sm overflow-auto">
-            {JSON.stringify(submittedData, null, 2)}
-          </pre>
-        </div>
-      )}
-    </div>
+        {submittedData && (
+          <div className="mt-6 rounded-md bg-green-50 p-4 dark:bg-green-900/20">
+            <h3 className="mb-2 font-semibold">Submitted data:</h3>
+            <pre className="overflow-auto text-sm">
+              {JSON.stringify(
+                { ...submittedData, password: '********' },
+                null,
+                2
+              )}
+            </pre>
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

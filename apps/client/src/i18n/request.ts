@@ -1,12 +1,15 @@
 import { getRequestConfig } from 'next-intl/server';
-import { routing } from './routing';
+
+import { isInArray } from '@repo/core';
 import en from '@repo/i18n/locales/en.json';
 import es from '@repo/i18n/locales/es.json';
+
+import { routing } from './routing';
 
 export default getRequestConfig(async ({ requestLocale }) => {
   let locale = await requestLocale;
 
-  if (!locale || !routing.locales.includes(locale as any)) {
+  if (!locale || !isInArray(locale, routing.locales)) {
     locale = routing.defaultLocale;
   }
 

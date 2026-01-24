@@ -1,3 +1,6 @@
+import { createRequire } from 'node:module';
+import * as path from 'path';
+
 import { Module } from '@nestjs/common';
 import {
   AcceptLanguageResolver,
@@ -5,8 +8,6 @@ import {
   I18nModule,
   QueryResolver,
 } from 'nestjs-i18n';
-import * as path from 'path';
-import { createRequire } from 'node:module';
 
 @Module({
   imports: [

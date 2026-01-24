@@ -6,11 +6,17 @@
     "dev": "next dev --turbopack --port 3001",
     "build": "next build --turbopack",
     "start": "next start --port 3001",
+    "typecheck": "tsc --noEmit",
     "lint": "eslint",
+    "lint:fix": "eslint --fix",
     "clean": "rm -rf .next"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
+    "@radix-ui/react-label": "^2.1.2",
+    "@radix-ui/react-select": "^2.1.5",
+    "@radix-ui/react-slot": "^1.1.1",
+    "@repo/core": "workspace:*",
     "@repo/data": "workspace:*",
     "@repo/i18n": "workspace:*",
     "@repo/ui": "workspace:*",
@@ -21,11 +27,13 @@
     "lucide-react": "latest",
     "next": "15.5.9",
     "next-intl": "latest",
+    "nuqs": "^2.8.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-form": "^7.71.1",
     "tailwind-merge": "latest",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
